@@ -30,7 +30,9 @@ class IndividualRevenue:
         # TODO: compute cpp contribution here.
         # Compute taxes on taxable income
         basic_federal_tax = self.compute_federal_tax(taxable_income, federal_tax_brackets)
-        provincial_tax = self.compute_provincial_tax(taxable_income, provincial_tax_brackets)
+        provincial_tax = self.compute_provincial_tax(
+            taxable_income, provincial_tax_brackets, self.cra.get_provincial_bpa()
+        )
         marginal_tax_rate = self._compute_margin_tax_rate(taxable_income, federal_tax_brackets, provincial_tax_brackets)
         # Compute non-refundable tax credits
         # FIXME fix fed_non_refundable_tax_credit_rate
@@ -167,10 +169,16 @@ class IndividualRevenue:
         # return sum(federal_tax_by_bracket)
         return self.compute_tax(income, fed_brackets)
 
-    def compute_provincial_tax(self, income, provincial_brackets):
-        # provincial_tax_by_bracket = _compute_bracket_taxes(income, provincial_brackets)
-        # return sum(provincial_tax_by_bracket)
-        return self.compute_tax(income, provincial_brackets)
+    def compute_provincial_tax(self, income, provincial_brackets, provincial_bpa=None):
+        """
+        Provincial tax before credits minus provincial BPA credit (BPA × lowest bracket rate).
+        """
+        gross = self.compute_tax(income, provincial_brackets)
+        if provincial_bpa is None:
+            return gross
+        lowest_rate = provincial_brackets[0][2]
+        credit = provincial_bpa * lowest_rate
+        return max(0.0, gross - credit)
 
     def get_marginal_tax_rate(self, income, brackets):
         for mn, mx, rate in brackets:

@@ -97,6 +97,13 @@ class CRA:
         bpa = self._config["bpa"]
         return BPA(bpa["max"], bpa["min"])
 
+    def get_provincial_bpa(self):
+        """
+        Provincial basic personal amount (Ontario in current config).
+        Used as a non-refundable tax credit at the province's lowest bracket rate.
+        """
+        return self._config["provincial_bpa"]
+
     def get_ympe(self):
         return self._config["ympe"]
 
