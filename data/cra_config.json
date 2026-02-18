@@ -1,0 +1,92 @@
+{
+  "2023": {
+    "basic_income_tax_credit": 2635,
+    "fed_non_refundable_tax_credit_rate": 0.15,
+    "federal_tax_brackets": [
+      [0, 53359, 0.15],
+      [53360, 106717, 0.205],
+      [106718, 165430, 0.26],
+      [165431, 235675, 0.29],
+      [235675, null, 0.33]
+    ],
+    "provincial_tax_brackets": [
+      [0, 49231, 0.0505],
+      [49231, 98463, 0.0915],
+      [98463, 150000, 0.1116],
+      [150000, 220000, 0.1216],
+      [220000, null, 0.1316]
+    ],
+    "basic_personal_amount_credit": {
+      "base_amount": 13520,
+      "basic_supplemental_amount": 1480,
+      "income_threshold": 165430,
+      "max_income_full_reduction": 235675,
+      "phase_out_range": 70245,
+      "phase_out_reduction_amount": 1480
+    },
+    "bpa": {
+      "max": 15000,
+      "min": 13521
+    },
+    "canada_employment_amount_max": 1368,
+    "ympe": 66600,
+    "medical_expense_threshold": {
+      "floor": 2635,
+      "pct_of_income": 0.03
+    },
+    "cpp": {
+      "rate": 0.0595,
+      "basic_annual_exemption": 3500,
+      "max_pensionable_income": 66600
+    },
+    "corporate_tax": {
+      "federal": { "small_business": 0.09, "general": 0.15 },
+      "provincial": { "small_business": 0.032, "general": 0.115 }
+    }
+  },
+  "2024": {
+    "basic_income_tax_credit": 2635,
+    "fed_non_refundable_tax_credit_rate": 0.15,
+    "federal_tax_brackets": [
+      [0, 55867, 0.15],
+      [55867, 111733, 0.205],
+      [111733, 173205, 0.26],
+      [173205, 246752, 0.29],
+      [246752, null, 0.33]
+    ],
+    "provincial_tax_brackets": [
+      [0, 51446, 0.0505],
+      [51446, 102894, 0.0915],
+      [102894, 150000, 0.1116],
+      [150000, 220000, 0.1216],
+      [220000, null, 0.1316]
+    ],
+    "basic_personal_amount_credit": {
+      "base_amount": 14156,
+      "basic_supplemental_amount": 1549,
+      "income_threshold": 173205,
+      "max_income_full_reduction": 246752,
+      "phase_out_range": 70245,
+      "phase_out_reduction_amount": 1480
+    },
+    "bpa": {
+      "max": 15705,
+      "min": 14156
+    },
+    "canada_employment_amount_max": 1433,
+    "ympe": 68500,
+    "medical_expense_threshold": {
+      "floor": 2759,
+      "pct_of_income": 0.03
+    },
+    "cpp": {
+      "rate": 0.0595,
+      "basic_annual_exemption": 3500,
+      "max_pensionable_income": 68500
+    },
+    "corporate_tax": {
+      "federal": { "small_business": 0.09, "general": 0.15 },
+      "provincial": { "small_business": 0.032, "general": 0.115 }
+    }
+  }
+}
