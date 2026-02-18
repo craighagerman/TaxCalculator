@@ -14,31 +14,54 @@ class IndividualRevenue:
         self.cpp_rate = self.cra.get_cpp_rate()
         self.cpp_basic_annual_exemption = self.cra.get_cpp_basic_annual_exemption()
 
-    def compute_basic_return(self, employment_income, ucc_benefit, ei_benefits, investment_income,
-                             rrsp_contribution, medical_expenses, self_employed):
+    def compute_basic_return(
+        self,
+        employment_income,
+        ucc_benefit,
+        ei_benefits,
+        investment_income,
+        rrsp_contribution,
+        medical_expenses,
+        self_employed,
+    ):
         # compute CPP contribution
         cpp_contribution = self.calculate_cpp(employment_income, self_employed)
         # Compute Canada employment amount
-        canada_employment_amount = self.cra.get_canada_employment_amount(employment_income)
+        canada_employment_amount = self.cra.get_canada_employment_amount(
+            employment_income
+        )
         federal_tax_brackets = self.cra.get_federal_tax_brackets()
         provincial_tax_brackets = self.cra.get_provincial_tax_brackets()
         # ----------------------------------------------------------------------
         # Compute income
-        total_income = self.calculate_total_income(employment_income, ucc_benefit, ei_benefits, investment_income)
+        total_income = self.calculate_total_income(
+            employment_income, ucc_benefit, ei_benefits, investment_income
+        )
         employment_deductions = self.calculate_employment_deductions(rrsp_contribution)
         taxable_income = self.calculate_net_income(total_income, employment_deductions)
         # TODO: compute cpp contribution here.
         # Compute taxes on taxable income
-        basic_federal_tax = self.compute_federal_tax(taxable_income, federal_tax_brackets)
+        basic_federal_tax = self.compute_federal_tax(
+            taxable_income, federal_tax_brackets
+        )
         provincial_tax = self.compute_provincial_tax(
             taxable_income, provincial_tax_brackets, self.cra.get_provincial_bpa()
         )
-        marginal_tax_rate = self._compute_margin_tax_rate(taxable_income, federal_tax_brackets, provincial_tax_brackets)
+        marginal_tax_rate = self._compute_margin_tax_rate(
+            taxable_income, federal_tax_brackets, provincial_tax_brackets
+        )
         # Compute non-refundable tax credits
         # FIXME fix fed_non_refundable_tax_credit_rate
-        tax_credits = self.compute_non_refundable_tax_credits(taxable_income, self.bpa, federal_tax_brackets,
-                                                              cpp_contribution, canada_employment_amount,
-                                                              ei_benefits, medical_expenses, taxable_income)
+        tax_credits = self.compute_non_refundable_tax_credits(
+            taxable_income,
+            self.bpa,
+            federal_tax_brackets,
+            cpp_contribution,
+            canada_employment_amount,
+            ei_benefits,
+            medical_expenses,
+            taxable_income,
+        )
         # Compute net federal tax
         net_federal_tax = self.compute_net_federal_tax(basic_federal_tax, tax_credits)
         # Total tax payable
@@ -56,7 +79,8 @@ class IndividualRevenue:
             cpp_contribution=cpp_contribution,
             total_tax_payable=total_tax_payable,
             avg_tax_rate=avg_tax_rate,
-            marginal_tax_rate=marginal_tax_rate)
+            marginal_tax_rate=marginal_tax_rate,
+        )
 
     def print_return_summary(self, tr: IndividualReturn):
         print("-" * 40)
@@ -87,9 +111,9 @@ class IndividualRevenue:
 
     def _compute_additional_bpa(self, income, bpa, brackets):
         """
-            When net income (line 23600) exceeds $173,205 in 2024,
-            the $1,549 is reduced until income reaches $246,752 and the additional amount is zero.
-            In other words, the additional amount is reduced by 2.1061%
+        When net income (line 23600) exceeds $173,205 in 2024,
+        the $1,549 is reduced until income reaches $246,752 and the additional amount is zero.
+        In other words, the additional amount is reduced by 2.1061%
         """
         threshold_bracket = brackets[3][0]
         default_additional_bpa = bpa.max - bpa.min
@@ -105,7 +129,9 @@ class IndividualRevenue:
     ############################################
     # Calculate Employment Income
     ############################################
-    def calculate_total_income(self, employment_income, ucc_benefit, ei_benefits, investment_income):
+    def calculate_total_income(
+        self, employment_income, ucc_benefit, ei_benefits, investment_income
+    ):
         return employment_income + ucc_benefit + ei_benefits + investment_income
 
     def calculate_employment_deductions(self, rrsp_contribution):
@@ -186,18 +212,33 @@ class IndividualRevenue:
                 return rate
         raise LookupError("Income not found in tax brackets")
 
-    def _compute_margin_tax_rate(self, taxable_income, federal_brackets, provincial_brackets):
+    def _compute_margin_tax_rate(
+        self, taxable_income, federal_brackets, provincial_brackets
+    ):
         fed_marginal_rate = self.get_marginal_tax_rate(taxable_income, federal_brackets)
-        prov_marginal_rate = self.get_marginal_tax_rate(taxable_income, provincial_brackets)
+        prov_marginal_rate = self.get_marginal_tax_rate(
+            taxable_income, provincial_brackets
+        )
         return fed_marginal_rate + prov_marginal_rate
 
-    def compute_total_tax(self, federal_tax, provincial_tax, cpp_contribution, ei_contribution):
+    def compute_total_tax(
+        self, federal_tax, provincial_tax, cpp_contribution, ei_contribution
+    ):
         return federal_tax + provincial_tax + cpp_contribution + ei_contribution
 
-    def compute_simple_tax_return(self, income, fed_brackets, provincial_brackets, cpp_contribution, ei_contribution):
+    def compute_simple_tax_return(
+        self,
+        income,
+        fed_brackets,
+        provincial_brackets,
+        cpp_contribution,
+        ei_contribution,
+    ):
         federal_tax = self.compute_federal_tax(income, fed_brackets)
         provincial_tax = self.compute_provincial_tax(income, provincial_brackets)
-        total_tax = self.compute_total_tax(federal_tax, provincial_tax, cpp_contribution, ei_contribution)
+        total_tax = self.compute_total_tax(
+            federal_tax, provincial_tax, cpp_contribution, ei_contribution
+        )
         net_income = income - total_tax
 
         print(f"Total Income:\t\t${income}")
@@ -216,20 +257,41 @@ class IndividualRevenue:
         return max(0.0, eligible_medical_expenses)
 
     #  Federal non-refundable tax credits
-    def compute_non_refundable_tax_credits(self, income, bpa_range, federal_brackets, cpp_contribution,
-                                           canada_employment_amount, ei_premiums,
-                                           medical_expenses, net_income):
+    def compute_non_refundable_tax_credits(
+        self,
+        income,
+        bpa_range,
+        federal_brackets,
+        cpp_contribution,
+        canada_employment_amount,
+        ei_premiums,
+        medical_expenses,
+        net_income,
+    ):
         bpa = self.compute_bpa(income, bpa_range, federal_brackets)
         income_tax_credit = net_income * 0.03  # line 108
         income_tax_credit = min(income_tax_credit, self.cra.basic_income_tax_credit)
 
         medical_expense_threshold = self.cra.get_medical_expense_threshold(income)
-        eligible_medical_expenses = self.compute_medical_expenses(medical_expenses, medical_expense_threshold)
-        tax_credits = sum([bpa, cpp_contribution, canada_employment_amount,
-                           ei_premiums, income_tax_credit, eligible_medical_expenses])
+        eligible_medical_expenses = self.compute_medical_expenses(
+            medical_expenses, medical_expense_threshold
+        )
+        tax_credits = sum(
+            [
+                bpa,
+                cpp_contribution,
+                canada_employment_amount,
+                ei_premiums,
+                income_tax_credit,
+                eligible_medical_expenses,
+            ]
+        )
         # Line 35000
-        non_refundable_tax_credits = tax_credits * self.cra.fed_non_refundable_tax_credit_rate
+        non_refundable_tax_credits = (
+            tax_credits * self.cra.fed_non_refundable_tax_credit_rate
+        )
         return non_refundable_tax_credits
 
     def compute_net_federal_tax(self, basic_federal_tax, non_refundable_tax_credits):
-        return basic_federal_tax - non_refundable_tax_credits
+        """Non-refundable credits can only reduce federal tax to zero, not below."""
+        return max(0.0, basic_federal_tax - non_refundable_tax_credits)
