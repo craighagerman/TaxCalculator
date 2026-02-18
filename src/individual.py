@@ -1,5 +1,5 @@
-from src.cra import CRA
-from src.data_objects import IndividualReturn
+from cra import CRA
+from data_objects import IndividualReturn
 
 
 class IndividualRevenue:
@@ -43,7 +43,7 @@ class IndividualRevenue:
         total_tax_payable = net_federal_tax + provincial_tax
         after_tax_income = employment_income - total_tax_payable
         avg_tax_rate = total_tax_payable / employment_income
-        result = IndividualReturn(
+        return IndividualReturn(
             employment_income=employment_income,
             total_income=total_income,
             taxable_income=taxable_income,
@@ -55,7 +55,24 @@ class IndividualRevenue:
             total_tax_payable=total_tax_payable,
             avg_tax_rate=avg_tax_rate,
             marginal_tax_rate=marginal_tax_rate)
-        return result
+
+    def print_return_summary(self, tr: IndividualReturn):
+        print("-" * 40)
+        print(f"Income & Deductions")
+        print(f"  Employment income:\t${tr.employment_income:,.2f}")
+        print(f"  Total income:\t\t\t${tr.total_income:,.2f}")
+        print(f"  RRSP contribution: \t${tr.rrsp_contribution:,.2f}")
+        print()
+        print(f"Taxable Income: \t\t${tr.taxable_income:,.2f}")
+        print(f"Taxes")
+        print(f"  Federal Tax: \t\t\t${tr.net_federal_tax:,.2f}")
+        print(f"  Provincial Tax: \t\t${tr.provincial_tax:,.2f}")
+        print(f"  CPP Contributions: \t${tr.cpp_contribution:,.2f}")
+        print()
+        print(f"Total Tax: \t\t\t\t${tr.total_tax_payable:,.2f}")
+        print()
+        print(f"After-tax income: \t\t${tr.after_tax_income:,.2f}")
+        print(f"Average tax rate:\t\t{(tr.avg_tax_rate * 100):,.2f}%")
 
     ############################################
     # Compute Basic Personal Amount
@@ -77,7 +94,7 @@ class IndividualRevenue:
         if not income > threshold_bracket:
             return default_additional_bpa
         reduction_factor = self._compute_reduction_factor(bpa, brackets)
-        return default_additional_bpa - (self, income - threshold_bracket) * reduction_factor
+        return default_additional_bpa - (income - threshold_bracket) * reduction_factor
 
     def compute_bpa(self, income, bpa, brackets):
         add_bpa = self._compute_additional_bpa(income, bpa, brackets)

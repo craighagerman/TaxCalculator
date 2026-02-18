@@ -1,0 +1,40 @@
+{
+  "year": 2025,
+  "country": "Canada",
+  "type": "Federal Income Tax",
+  "currency": "CAD",
+  "indexing_factor": "2.7%",
+  "brackets": [
+    {
+      "rate": 0.145,
+      "min_income": 0,
+      "max_income": 57375,
+      "description": "14.5% on the first $57,375"
+    },
+    {
+      "rate": 0.205,
+      "min_income": 57375.01,
+      "max_income": 114750,
+      "description": "20.5% on income over $57,375 up to $114,750"
+    },
+    {
+      "rate": 0.26,
+      "min_income": 114750.01,
+      "max_income": 177882,
+      "description": "26% on income over $114,750 up to $177,882"
+    },
+    {
+      "rate": 0.29,
+      "min_income": 177882.01,
+      "max_income": 253414,
+      "description": "29% on income over $177,882 up to $253,414"
+    },
+    {
+      "rate": 0.33,
+      "min_income": 253414.01,
+      "max_income": null,
+      "description": "33% on income over $253,414"
+    }
+  ],
+  "notes": "The federal government proposed reducing the lowest tax rate to 14% effective July 1, 2025, resulting in a prorated rate of 14.5% for the full 2025 tax year."
+}

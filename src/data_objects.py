@@ -1,12 +1,5 @@
-from typing import Optional
 from dataclasses import dataclass
-import os
-
-
-# @dataclass
-# class Individual:
-#     salary: int
-#     rrsp: int
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -49,6 +42,7 @@ class IndividualReturn:
     avg_tax_rate: float
     marginal_tax_rate: float
 
+
 @dataclass(frozen=True)
 class CorporateReturn:
     revenue: float
@@ -56,7 +50,9 @@ class CorporateReturn:
     after_tax_revenue: float
     tax_credits: float
     deductions: float
+    tax_rate: float
     net_federal_tax: float
     provincial_tax: float
+    cpp_contribution: float
     total_tax_payable: float
     avg_tax_rate: float

@@ -1,12 +1,13 @@
-from src.data_objects import BPA
+from data_objects import BPA
 
 
 class CRA:
 
     def __init__(self, year):
         self.year = year
-        self.basic_income_tax_credit = 2635 # Line 109
-        self.fed_non_refundable_tax_credit_rate = 0.15 # Line 114
+        self.basic_income_tax_credit = 2635  # Line 109
+        self.fed_non_refundable_tax_credit_rate = 0.15  # Line 114
+
     def get_federal_tax_brackets(self):
         match self.year:
             case year if year == 2024:
@@ -24,7 +25,6 @@ class CRA:
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
 
-
     def get_provincial_tax_brackets(self):
         match self.year:
             case year if year == 2024:
@@ -41,6 +41,11 @@ class CRA:
                         (220000, float('inf'), 0.1316)]
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
+
+
+    def print_all_brackets(self):
+        federal_tax_brackets = self.get_federal_tax_brackets()
+        provincial_tax_brackets = self.get_provincial_tax_brackets()
 
 
     def get_federal_non_refundable_tax_credits_basic_personal_amount(self, net_income):
@@ -76,9 +81,6 @@ class CRA:
                 return base_amount + supplemental_amount
         raise ValueError("Invalid year. Must be one of {2023, 2024}")
 
-
-
-
     def get_canada_employment_amount(self, income):
         """
 
@@ -101,12 +103,24 @@ class CRA:
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
 
-
     # Basic Personal Amount
     # Note: The "additional amount" is gradually reduced when net income (line 23600) is in excess of the bottom of the fourth tax bracket.
     # bpa_2024 = BPA(15705, 14156)
     # bpa_2023 = BPA(15000, 13521)
     def get_bpa(self):
+        """
+        n.b. The basic personal amount is the amount that can be earned before any
+        federal/provincial/territorial tax is paid. Taxtips.ca lists it as a Tax Credit
+        see: https://www.taxtips.ca/taxrates/calculating-canadian-personal-income-tax.htm
+        From Fidelity:
+        There are two sets of Basic Personal Amount that are applicable to Canadian taxpayers.
+        The Federal Basic Personal Amount deducts Federal income tax for all taxpayers using the
+        same thresholds across Canada. The provincial Basic Personal Amount is determined by
+        each province with different thresholds and application rules.
+        see: https://www.fidelity.ca/en/insights/articles/personal-amount-tax-credit-guide
+
+
+        """
         match self.year:
             case year if year == 2024:
                 return BPA(15705, 14156)
@@ -114,7 +128,6 @@ class CRA:
                 return BPA(15000, 13521)
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
-
 
     def get_ympe(self):
         match self.year:
@@ -124,7 +137,6 @@ class CRA:
                 return 66600
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
-
 
     def get_medical_expense_threshold(self, income):
         pct = 0.03
@@ -136,7 +148,6 @@ class CRA:
             case _:
                 raise ValueError("Invalid year. Must be one of {2023, 2024}")
 
-
     # CPP (Canada Pension Plan) contributions
     # cpp_2024 = 3867.50
     # cpp_2023 = 3754.45
@@ -144,9 +155,20 @@ class CRA:
     def get_cpp_rate(self):
         return 0.0595
 
-
     def get_cpp_basic_annual_exemption(self):
         return 3500
+
+    def max_cpp_pensionable_income(self):
+        """
+        Earnings up to the maximum pensionable income will be subject to CPP contributions
+        """
+        match self.year:
+            case year if year == 2024:
+                return 68500
+            case year if year == 2023:
+                return 66600
+            case _:
+                raise ValueError("Invalid year. Must be one of {2023, 2024}")
 
 
     def get_federal_corporate_tax(self, is_small_business=True):
@@ -155,10 +177,8 @@ class CRA:
             return 0.09
         return 0.15
 
-
     def get_provincial_corporate_tax(self, is_small_business=True):
         # n.b. year isn't relevant for 2023 vs 2024. May be in the future.
         if is_small_business:
             return 0.032
         return 0.115
-

@@ -1,0 +1,33 @@
+{
+  "province": "Ontario",
+  "year": 2025,
+  "tax_brackets": [
+    {
+      "bracket": 1,
+      "income_threshold": "Up to $52,886",
+      "rate": 0.0505
+    },
+    {
+      "bracket": 2,
+      "income_threshold": "$52,886.01 to $105,775",
+      "rate": 0.0915
+    },
+    {
+      "bracket": 3,
+      "income_threshold": "$105,775.01 to $150,000",
+      "rate": 0.1116
+    },
+    {
+      "bracket": 4,
+      "income_threshold": "$150,000.01 to $220,000",
+      "rate": 0.1216
+    },
+    {
+      "bracket": 5,
+      "income_threshold": "Over $220,000",
+      "rate": 0.1316
+    }
+  ],
+  "basic_personal_amount": 12747,
+  "notes": "Rates based on 2025 Ontario provincial tax calculations."
+}
